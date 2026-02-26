@@ -1,76 +1,106 @@
-SDR Antenna Rotation Measurement System
-Overview
+# SDR-Based Antenna Radiation Pattern Measurement System
 
-This project implements a Software-Defined Radio (SDR) signal transmission and antenna rotation system to measure received power as a function of angle. The goal is to characterize antenna radiation patterns and analyze signal propagation using real-world hardware.
+## Project Summary
 
-This system integrates:
+This project develops a Software-Defined Radio (SDR) based experimental platform for measuring received power as a function of antenna orientation.
 
-GNU Radio signal generation
+The objective is to characterize antenna radiation patterns through controlled transmission, mechanical rotation, and digital power measurement.
 
-SDR hardware transmission (LimeSDR Mini)
+The system integrates RF theory, SDR modulation, embedded motor control, and signal processing.
 
-Ham radio signal reception
+---
 
-Stepper-motor-controlled antenna rotation
+## System Architecture
 
-Python-based received power analysis
+Transmitter Chain:
+Baseband Signal Generation → Complex Modulation → LimeSDR Upconversion → RF Radiation
 
-Objectives
+Receiver Chain:
+RF Reception → LimeSDR Downconversion → IQ Sampling → Power Estimation → Data Logging
 
-Generate NBFM test beacon using GNU Radio
+Mechanical Subsystem:
+Stepper Motor Rotation → Angular Position Control → Synchronized Measurement
 
-Transmit RF signal via SDR
+---
 
-Rotate receiving antenna using stepper motor
+## Signal Generation
 
-Record received signal strength vs angle
+Signal generation is performed in GNU Radio.
 
-Construct radiation pattern visualization
+- Complex baseband signal generation
+- Controlled frequency placement relative to RF center frequency
+- Narrowband test tone for controlled bandwidth
+- Configurable transmit gain
 
-Compare measured data to theoretical models (Friis Transmission Equation)
+The LimeSDR performs hardware upconversion to the selected RF carrier frequency.
 
-System Architecture
+---
 
-Signal Source → GNU Radio Modulation → SDR Transmitter → RF Propagation → Rotating Antenna → Receiver → Power Measurement → Python Analysis
+## Power Measurement Method
 
-Hardware
+Received power is computed digitally from complex IQ samples:
 
-LimeSDR Mini
+P = mean(|I + jQ|²)
 
-Ham Radio Receiver
+Converted to relative dB:
 
-28BYJ-48 Stepper Motor
+P_dB = 10 log10(P)
 
-ULN2003 Driver Module
+Initial validation uses relative power measurement. Future work includes calibration to approximate absolute dBm.
 
-Arduino (motor control)
+---
 
-Directional antenna
+## Theoretical Basis
 
-Software Stack
+Radiation behavior is analyzed using the Friis Transmission Equation:
 
-GNU Radio
+Pr = Pt Gt Gr (λ / (4πR))²
 
-SoapySDR
+Where:
+- Pt = transmitted power
+- Gt = transmit antenna gain
+- Gr = receive antenna gain
+- R = separation distance
+- λ = wavelength
 
-Python (NumPy, Matplotlib)
+Measurements will be compared against theoretical predictions to evaluate system behavior.
 
-Arduino IDE
+---
 
-Current Status
+## Hardware
 
-✔ NBFM signal generation in GNU Radio
-✔ SDR configuration via SoapySDR
-⏳ Antenna rotation apparatus integration
-⏳ Automated received power logging
-⏳ Radiation pattern plotting
+- LimeSDR-USB (full-size)
+- Dual-band VHF/UHF antennas
+- Stepper motor (28BYJ-48)
+- ULN2003 driver module
+- Arduino-based rotation control
 
-Future Work
+---
 
-Implement automated angle stepping + synchronized logging
+## Development Status
 
-Add theoretical vs measured comparison plots
+✔ SDR transmission and reception validation  
+✔ Digital power estimation pipeline  
+⏳ Mechanical rotation integration  
+⏳ Automated data logging  
+⏳ Polar radiation pattern plotting  
 
-Integrate polar radiation pattern visualization
+---
 
-Evaluate SNR vs angle
+## Engineering Objectives
+
+- Establish controlled RF link
+- Prevent receiver front-end overload
+- Maintain repeatable measurement conditions
+- Quantify directional gain variation
+- Develop synchronized angle vs power dataset
+
+---
+
+## Long-Term Goals
+
+- Full automation of measurement cycle
+- Absolute power calibration
+- Comparison of measured vs theoretical radiation patterns
+- Extension toward radar and RF sensing applications
+- Complete function open-source system
